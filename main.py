@@ -4,9 +4,15 @@ import pandas as pd
 
 BACKGROUND_COLOR = "#B1DDC6"
 
-data = pd.read_csv("data/french_words.csv")
-to_learn = data.to_dict(orient= "records")
-current_card = []
+try:
+    data = pd.read_csv("data/words_to_learn.csv")
+except FileNotFoundError:
+    original_data = pd.read_csv("data/french_words.csv")
+    print(original_data)
+    to_learn = original_data.to_dict(orient="records")
+else:
+    to_learn = data.to_dict(orient= "records")
+# current_card = []
 
 
 def next_card():
@@ -26,6 +32,11 @@ def flip_card():
 
 
 
+def known():
+    to_learn.remove(current_card)
+    data = pd.DataFrame(to_learn)
+    data.to_csv("data/words_to_learn.csv", index=False)
+    next_card()
 
 
 
@@ -54,7 +65,7 @@ unknown_button = Button(image = cross_image, highlightthickness = 0, command = n
 unknown_button.grid(row=1, column=0)
 
 check_image = PhotoImage(file= "images/right.png")
-known_button = Button(image = check_image, highlightthickness = 0, command = next_card)
+known_button = Button(image = check_image, highlightthickness = 0, command = known)
 known_button.grid(row=1, column=1)
 
 
